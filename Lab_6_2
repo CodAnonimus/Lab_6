@@ -3,23 +3,57 @@
 #include <time.h>
 
 int main() {
-    int n;
-    printf("Введіть розмірність квадратної матриці: ");
-    scanf("%d", &n);
+    int choice = 1;
+    while (choice != 0) {
+        int n;
+        printf("Введіть розмірність квадратної матриці: ");
+        scanf("%d", &n);
 
-    int matrix[n][n];
-    srand(time(NULL)); 
-    // Ініціалізуємо генератор псевдовипадкових чисел
-
-    printf("Згенерована матриця:\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            matrix[i][j] = rand() % 201 - 100; 
-            // Генеруємо випадкові числа від -100 до 100
-
-            printf("%d ", matrix[i][j]);
+        int matrix[n][n];
+        srand(time(NULL)); // Ініціалізуємо генератор псевдовипадкових чисел
+        printf("Згенерована матриця:\n");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = rand() % 201 - 100; // Генеруємо випадкові числа від -100 до 100
+                printf("%d ", matrix[i][j]);
+            }
+            printf("\n");
         }
-        printf("\n");
+
+        // Перевірка на ортонормованість
+        int is_orthonormal = 1;
+        for (int i = 0; i < n && is_orthonormal; i++) {
+            // Перевірка на одиничну довжину вектора
+            int sum_of_squares = 0;
+            for (int j = 0; j < n; j++) {
+                sum_of_squares += matrix[i][j] * matrix[i][j];
+            }
+            if (sum_of_squares != 1) {
+                is_orthonormal = 0;
+            }
+
+            // Перевірка скалярних добутків рядків
+            for (int k = 0; k < i && is_orthonormal; k++) {
+                int sum_of_products = 0;
+                for (int l = 0; l < n; l++) {
+                    sum_of_products += matrix[i][l] * matrix[k][l];
+                }
+                if (sum_of_products != 0) {
+                    is_orthonormal = 0;
+                }
+            }
+        }
+
+        if (is_orthonormal) {
+            printf("Матриця є ортонормованою.\n");
+        } else {
+            printf("Матриця не є ортонормованою.\n");
+        }
+
+        printf("Виберіть опцію:\n");
+        printf("1. Перевірити іншу матрицю\n");
+        printf("0. Завершити\n");
+        scanf("%d", &choice);
     }
 
     return 0;
