@@ -2,59 +2,64 @@
 #include <stdlib.h>
 #include <time.h>
 
-int main() {
-    int choice = 1;
-    while (choice != 0) {
-        int n;
-        printf("Введіть розмірність квадратної матриці: ");
-        scanf("%d", &n);
+#define MAX_SIZE 10
 
-        int matrix[n][n];
-        srand(time(NULL)); // Ініціалізуємо генератор псевдовипадкових чисел
+int main() {
+    int matrix[MAX_SIZE][MAX_SIZE];
+    int size, choice;
+    int simetria;
+
+    srand(time(0));
+
+    do {
+        printf("Введіть розмір квадратної матриці (натуральне число до %d): ", MAX_SIZE);
+        if (scanf("%d", &size) != 1 || size < 1 || size > MAX_SIZE) {
+            printf("Помилка: введено некоректне значення.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                matrix[i][j] = (rand() % 201) - 100;
+            }
+        }
+
         printf("Згенерована матриця:\n");
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                matrix[i][j] = rand() % 201 - 100; // Генеруємо випадкові числа від -100 до 100
-                printf("%d ", matrix[i][j]);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                printf("%4d ", matrix[i][j]);
             }
             printf("\n");
         }
 
-        // Перевірка на ортонормованість
-        int is_orthonormal = 1;
-        for (int i = 0; i < n && is_orthonormal; i++) {
-            // Перевірка на одиничну довжину вектора
-            int sum_of_squares = 0;
-            for (int j = 0; j < n; j++) {
-                sum_of_squares += matrix[i][j] * matrix[i][j];
-            }
-            if (sum_of_squares != 1) {
-                is_orthonormal = 0;
-            }
-
-            // Перевірка скалярних добутків рядків
-            for (int k = 0; k < i && is_orthonormal; k++) {
-                int sum_of_products = 0;
-                for (int l = 0; l < n; l++) {
-                    sum_of_products += matrix[i][l] * matrix[k][l];
+        simetria = 1;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (matrix[i][j] != matrix[j][i]) {
+                    simetria = 0;
+                    break;
                 }
-                if (sum_of_products != 0) {
-                    is_orthonormal = 0;
-                }
+            }
+            if (!simetria) {
+                break;
             }
         }
 
-        if (is_orthonormal) {
-            printf("Матриця є ортонормованою.\n");
+        if (simetria) {
+            printf("Матриця є симетричною відносно головної діагоналі.\n");
         } else {
-            printf("Матриця не є ортонормованою.\n");
+            printf("Матриця не є симетричною відносно головної діагоналі.\n");
         }
 
-        printf("Виберіть опцію:\n");
-        printf("1. Перевірити іншу матрицю\n");
-        printf("0. Завершити\n");
-        scanf("%d", &choice);
-    }
+        printf("Натисніть 1 щоб запустити програму спочатку або 0 щоб завершити програму: ");
+        if (scanf("%d", &choice) != 1) {
+            printf("Помилка: введено некоректне значення.\n");
+            while (getchar() != '\n');
+            choice = 1;
+        }
+
+    } while (choice != 0);
 
     return 0;
 }
